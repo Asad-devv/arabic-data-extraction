@@ -109,14 +109,16 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         doc.add_page_break()
 
     if heading:
+        if not need_footnotes:
+            heading = remove_small_number_brackets(heading)
         heading = heading.replace("\n", " ")
         
         heading = heading.strip()
+        
         heading = remove_square_brackets(heading)
         heading = remove_given_characters(heading, remove_characters)
         heading = remove_spaces(heading)
-        if not need_footnotes:
-            heading = remove_small_number_brackets(heading)
+        
         paragraph = doc.add_paragraph(heading)
         run = paragraph.runs[0]
         run.bold = True
@@ -124,6 +126,8 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         run.font.size = Pt(14)
     
     if main_content:
+        if not need_footnotes:
+            main_content = remove_small_number_brackets(main_content)
         main_content = main_content.replace("\n", " ")
         paragraph = doc.add_paragraph("")
       # Remove leading and trailing whitespace
@@ -132,8 +136,7 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         main_content = remove_square_brackets(main_content)
         main_content = remove_given_characters(main_content, remove_characters)
         main_content = remove_spaces(main_content)
-        if not need_footnotes:
-            main_content = remove_small_number_brackets(main_content)
+        
         paragraph = doc.add_paragraph(main_content)
         paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         if paragraph.runs:
