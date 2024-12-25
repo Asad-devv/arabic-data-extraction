@@ -34,8 +34,8 @@ def pdf_to_images(pdf_path, output_folder, start_page=1, end_page=None):
         pix.save(image_path)
 
 def remove_small_number_brackets(input_string):
-    # Regular expression to match brackets containing one or two digits (English or Arabic) with optional spaces
-    cleaned_string = re.sub(r'\(\s*[0-9\u0660-\u0669]{1,2}\s*\)', '', input_string)
+    # Regular expression to match standalone numbers or numbers inside brackets
+    cleaned_string = re.sub(r'\(?\s*[0-9\u0660-\u0669]+\s*\)?', '', input_string)
     return cleaned_string
 
 
