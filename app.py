@@ -207,7 +207,7 @@ elif choice == "Find and Replace":
     if "find_replace_pairs" not in st.session_state:
         st.session_state.find_replace_pairs = [("", "")]
 
-    st.subheader("Specify Text to Find and Replace")
+    st.subheader("Specify Text to Find and Replace (Use copy-paste for quick and better results)")
 
     # Dynamic inputs for find and replace pairs
     for i, (find_text, replace_text) in enumerate(st.session_state.find_replace_pairs):
