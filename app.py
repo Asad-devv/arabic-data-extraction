@@ -96,7 +96,7 @@ if choice == "Process PDF":
 
     # Processing options
     footnotes = st.checkbox("Footnotes", value=False)
-    headers = st.checkbox("Headers", value=False)
+    headers = st.checkbox("Headers and Footers", value=False)
     extra_chars = st.text_area("Characters to Remove (comma-separated):", "").split(",")
 
     if st.button("Process PDF"):
