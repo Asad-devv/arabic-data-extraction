@@ -238,7 +238,7 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
             print(f"Unexpected error for page {i}: {e}")
             # results.append({"error": str(e), "page": i})
 
-        time.sleep(2 if api_key else 8)  # Adjust delay based on API key presence
+        time.sleep(2 if api_key else 15)  # Adjust delay based on API key presence
 
     return results
 
