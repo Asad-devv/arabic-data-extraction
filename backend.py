@@ -4,7 +4,6 @@ import os
 import fitz
 import time
 import json
-import streamlit as st
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
@@ -36,7 +35,7 @@ def pdf_to_images(pdf_path, output_folder, start_page=1, end_page=None):
 
 def remove_small_number_brackets(input_string):
     # Regular expression to match standalone numbers or numbers inside brackets
-    cleaned_string = re.sub(r'\(\s*[0-9\u0660-\u0669]+\s*\)|\b[0-9\u0660-\u0669]+\b', '', input_string)
+    cleaned_string = re.sub(r'\(?\s*[0-9\u0660-\u0669]+\s*\)?', '', input_string)
     return cleaned_string
 
 
@@ -110,9 +109,8 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
 
     if heading:
         heading = heading.replace("\n", " ")
+        
         heading = heading.strip()
-        if need_footnotes==False:
-            heading = remove_small_number_brackets(heading)
         heading = remove_square_brackets(heading)
         heading = remove_given_characters(heading, remove_characters)
         heading = remove_spaces(heading)
@@ -123,17 +121,15 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         run.font.size = Pt(14)
     
     if main_content:
-        
         main_content = main_content.replace("\n", " ")
         paragraph = doc.add_paragraph("")
       # Remove leading and trailing whitespace
         main_content = main_content.strip()
-        if need_footnotes==False:
+        if not need_footnotes:
             main_content = remove_small_number_brackets(main_content)
         main_content = remove_square_brackets(main_content)
         main_content = remove_given_characters(main_content, remove_characters)
         main_content = remove_spaces(main_content)
-        
         paragraph = doc.add_paragraph(main_content)
         paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         if paragraph.runs:
@@ -150,7 +146,6 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
             line = line.strip()
             is_new_point, text = extract_number_and_line(line)
             line = remove_spaces(line)
-            line=remove_given_characters(line,remove_characters)
             if not line:
               continue
 
@@ -206,9 +201,7 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
     results = []  # Store results for all pages
 
     for i in range(start_page, end_page + 1):
-        
         image_path = f"temp_images/page_{i}.jpg"
-        st.write(f"Processing Page No:{i}")
         myfile = genai.upload_file(image_path)
 
         if myfile is None:
@@ -219,7 +212,7 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
         try:
             result = model.generate_content([myfile, pdf_extraction_prompt])
             print(f"Processing page {i}: {image_path}")
-            
+
             result_text = result.text
             print(f"Result for page {i}: {result_text}")
             start_index = result_text.find("{")
@@ -241,6 +234,5 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
         time.sleep(2 if api_key else 15)  # Adjust delay based on API key presence
 
     return results
-
 
 
