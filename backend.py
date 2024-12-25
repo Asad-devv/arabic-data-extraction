@@ -117,7 +117,7 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         paragraph = doc.add_paragraph(heading)
         run = paragraph.runs[0]
         run.bold = True
-        paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         run.font.size = Pt(14)
     
     if main_content:
