@@ -116,8 +116,9 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         doc.add_page_break()
 
     if heading:
+        if need_footnotes==False:
+            heading = remove_small_number_brackets(heading)
         heading = heading.replace("\n", " ")
-        
         heading = heading.strip()
         heading = remove_square_brackets(heading)
         heading = remove_given_characters(heading, remove_characters)
@@ -133,7 +134,7 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         paragraph = doc.add_paragraph("")
       # Remove leading and trailing whitespace
         main_content = main_content.strip()
-        if not need_footnotes:
+        if need_footnotes==False:
             main_content = remove_small_number_brackets(main_content)
         main_content = remove_square_brackets(main_content)
         main_content = remove_given_characters(main_content, remove_characters)
