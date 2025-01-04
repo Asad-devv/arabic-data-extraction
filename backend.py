@@ -9,6 +9,8 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
 import re
 from dotenv import load_dotenv
+import pyarabic.trans
+
 load_dotenv()
 
 
@@ -34,8 +36,10 @@ def pdf_to_images(pdf_path, output_folder, start_page=1, end_page=None):
         pix.save(image_path)
 
 def remove_small_number_brackets(input_string):
-    # Regular expression to match standalone numbers or numbers inside brackets
-    cleaned_string = re.sub(r'\(?\s*[0-9\u0660-\u0669]+\s*\)?', '', input_string)
+    # Regular expression to match brackets containing one or two digits (English or Arabic) with optional spaces
+    digit_text=pyarabic.trans.normalize_digits(input_string, source='all', out='west')
+
+    cleaned_string = re.sub(r"[()0-9]+", "", digit_text)
     return cleaned_string
 
 
@@ -43,10 +47,14 @@ def remove_square_brackets(input_string):
     cleaned_string = re.sub(r'\[.*?\]', '', input_string)
     return cleaned_string
 
-def remove_spaces(input_string):
-    # Replace multiple spaces with a single space
-    cleaned_string = re.sub(r'\s+', ' ', input_string).strip()
-    return cleaned_string
+def clean_arabic_text(text):
+    # Ensure no space before punctuation
+    text = re.sub(r'\s+([،؛:.؟!])', r'\1', text)
+    # Ensure one space after punctuation
+    text = re.sub(r'([،؛:.؟!])([^\s])', r'\1 \2', text)
+    # Remove extra spaces around text
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
 
 def remove_given_characters(input_string, characters_to_remove):
     # Removes characters outside of brackets
@@ -78,7 +86,7 @@ def extract_number_and_line(line):
             return True, line[4:]
     return False, line
 
-def process_page(page_data, doc, page_number, need_header_and_footer=True , need_footnotes=True,remove_characters=["*"]):
+def process_page(page_data, doc, page_number, need_header_and_footer=True , need_footnotes=True,remove_characters=["*",">","<"]):
     """
     Processes OCR results and formats the content into a Word document.
 
@@ -113,11 +121,11 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         heading = heading.strip()
         heading = remove_square_brackets(heading)
         heading = remove_given_characters(heading, remove_characters)
-        heading = remove_spaces(heading)
+        heading = clean_arabic_text(heading)
         paragraph = doc.add_paragraph(heading)
         run = paragraph.runs[0]
         run.bold = True
-        paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run.font.size = Pt(14)
     
     if main_content:
@@ -129,7 +137,7 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
             main_content = remove_small_number_brackets(main_content)
         main_content = remove_square_brackets(main_content)
         main_content = remove_given_characters(main_content, remove_characters)
-        main_content = remove_spaces(main_content)
+        main_content = clean_arabic_text(main_content)
         paragraph = doc.add_paragraph(main_content)
         paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         if paragraph.runs:
@@ -145,7 +153,7 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         for line in footnotes.split("\n"):
             line = line.strip()
             is_new_point, text = extract_number_and_line(line)
-            line = remove_spaces(line)
+            line = clean_arabic_text(line)
             if not line:
               continue
 
@@ -234,5 +242,6 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
         time.sleep(2 if api_key else 15)  # Adjust delay based on API key presence
 
     return results
+
 
 
