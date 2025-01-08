@@ -39,7 +39,7 @@ def remove_small_number_brackets(input_string):
     # Regular expression to match brackets containing one or two digits (English or Arabic) with optional spaces
     digit_text=pyarabic.trans.normalize_digits(input_string, source='all', out='west')
 
-    cleaned_string = re.sub(r"[()0-9]+", "", digit_text)
+    cleaned_string = re.sub(r"\(\d+\)", "", digit_text)
     return cleaned_string
 
 
