@@ -45,7 +45,7 @@ def remove_small_number_brackets(input_string):
 
 def remove_square_brackets(input_string):
     cleaned_text = re.sub(r"\[[\u0600-\u06FF\s\d/]+\]", "", input_string)
-    return cleaned_string
+    return cleaned_text
 
 def clean_arabic_text(text):
     # Ensure no space before punctuation
