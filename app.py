@@ -24,13 +24,20 @@ You will be given pages of a PDF file containing text in Arabic. Your task is to
    - Header is mostly seprated by the actual line using the line below the header.
 
 2. **Heading**:
-   - Extract the main heading of the page if it exists.
-   - The main heading is typically a prominent line of text near the top of the body, often in larger, bold font and distinct in appearance from the header.
-   -it is center-aligned
-   - Do not confuse this with text present in the header, or main content section.
+
+- Extract the **main heading** if it exists. This heading is typically located **below the header** (if present) and **above the main content**.
+- The main heading is usually a **prominent line of text** near the top of the page body. It is often characterized by:
+  - Larger and bold font.
+  - Center-aligned formatting.
+- **Do not confuse the heading with:**
+  - Text present in the **header** (repeated content, such as document titles or page numbers at the very top).
+  - Text that is part of the **main content**.
+- If a heading appears within the body of the page (e.g., as part of a subsection), it should be treated as part of the **main content section**, not as the main heading.
+- If there is no heading present between the header and main content, leave the "heading" field as `null`.
+
 
 3. **Main Content**:
-   - Extract all text from the body of the page that is not part of the header, heading, footer, or footnotes.
+   - Extract all text from the body of the page that is not part of the header, footer, or footnotes.
 
 4. **Footnotes (Text Below the Black Line)**:
    - Carefully identify any black horizontal line present on the page.
