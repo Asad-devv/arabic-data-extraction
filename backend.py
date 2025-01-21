@@ -244,5 +244,45 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
 
     return results
 
+def process_section(doc, main_content):
+    """
+    Helper function to process and add a section to the document.
+    """
+    if main_content:
+        paragraph = doc.add_paragraph("------------------")
+        paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        main_content = main_content.replace("\n", " ")
+        paragraph = doc.add_paragraph("")
+      # Remove leading and trailing whitespace
+        main_content = main_content.strip()
+        main_content = remove_square_brackets(main_content)
+        main_content = remove_given_characters(main_content, ["*",">","<","«","»"])
+        main_content = clean_arabic_text(main_content)
+        paragraph = doc.add_paragraph(main_content)
+        paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        if paragraph.runs:
+            paragraph.runs[0].font.size = Pt(10)
+            paragraph.runs[0].font.name = "Times New Roman"
+
+
+def process_page2(page_data, doc, page_number):
+    """
+    Processes a page's data and formats it into the Word document.
+    """
+    # Add a page break if it's not the first page
+    if page_number > 1:
+        doc.add_page_break()
+
+    # Process each section
+    if "section1" in page_data:
+        process_section(doc, page_data["section1"])
+    if "section2" in page_data:
+        process_section(doc, page_data["section2"])
+    if "section3" in page_data:
+        process_section(doc, page_data["section3"])
+    if "section4" in page_data:
+        process_section(doc, page_data["section4"])
+
+
 
 
