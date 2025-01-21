@@ -8,7 +8,7 @@ import streamlit as st
 import google.generativeai as genai
 import re
 from dotenv import load_dotenv
-from backend import pdf_to_images, extract_pdf_content, process_page
+from backend import pdf_to_images, extract_pdf_content, process_page,process_page2
 load_dotenv()
 
 # Default API Key
