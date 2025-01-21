@@ -40,7 +40,7 @@ choice = st.sidebar.radio("Go to:", options)
 
 # Process PDF Section
 if choice == "Process PDF":
-   pdf_extraction_prompt = """
+    pdf_extraction_prompt = """
    You will be given pages of a PDF file containing text in Arabic. Your task is to extract the content from each page and categorize it into the following sections in **JSON format**:
 
 1. **Headers**:
