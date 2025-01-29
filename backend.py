@@ -168,7 +168,7 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
     
     if main_content:
         main_content = main_content.replace("\n", " ")
-
+        paragraph = doc.add_paragraph("")
     # Remove leading and trailing whitespace
         main_content = main_content.strip()
 
