@@ -148,21 +148,47 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run.font.size = Pt(14)
     
+    # if main_content:
+    #     main_content = main_content.replace("\n", " ")
+    #     paragraph = doc.add_paragraph("")
+    #   # Remove leading and trailing whitespace
+    #     main_content = main_content.strip()
+    #     if need_footnotes==False:
+    #         main_content = remove_small_number_brackets(main_content)
+    #     main_content = remove_square_brackets(main_content)
+    #     main_content = remove_given_characters(main_content, remove_characters)
+    #     main_content = clean_arabic_text(main_content)
+    #     for text in main_content:
+    #     paragraph = doc.add_paragraph(main_content)
+    #     paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    #     if paragraph.runs:
+    #         paragraph.runs[0].font.size = Pt(10)
+    #         paragraph.runs[0].font.name = "Times New Roman"
+
+    
     if main_content:
         main_content = main_content.replace("\n", " ")
-        paragraph = doc.add_paragraph("")
-      # Remove leading and trailing whitespace
+
+    # Remove leading and trailing whitespace
         main_content = main_content.strip()
-        if need_footnotes==False:
+
+        if need_footnotes == False:
             main_content = remove_small_number_brackets(main_content)
+
         main_content = remove_square_brackets(main_content)
         main_content = remove_given_characters(main_content, remove_characters)
         main_content = clean_arabic_text(main_content)
-        paragraph = doc.add_paragraph(main_content)
-        paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        if paragraph.runs:
-            paragraph.runs[0].font.size = Pt(10)
-            paragraph.runs[0].font.name = "Times New Roman"
+
+    # Split text based on '#' and remove empty parts
+        content_parts = [part.strip() for part in main_content.split('#') if part.strip()]
+
+    # Add each part to the document
+        for part in content_parts:
+            paragraph = doc.add_paragraph(part)
+            paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            if paragraph.runs:
+                paragraph.runs[0].font.size = Pt(10)
+                paragraph.runs[0].font.name = "Times New Roman"
 
     if need_footnotes and footnotes:
         paragraph = doc.add_paragraph("------------------")
