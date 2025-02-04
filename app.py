@@ -64,7 +64,7 @@ if choice == "Process PDF":
 
 3. **Main Content**:
    - Extract all text from the body of the page that is not part of the header, footer, or footnotes.
-   - If a heading is encountered inside the main content,show it in the main content and enclose it with # symbols as #heading#
+   -  If there is a heading Inside the main content, show it in the main content and enclose it with #(hash) symbols as this (#text#)
 
 4. **Footnotes (Text Below the Black Line)**:
    - Carefully identify any black horizontal line present on the page.
