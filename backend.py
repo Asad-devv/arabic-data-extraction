@@ -10,7 +10,7 @@ from docx.shared import Pt
 import re
 from dotenv import load_dotenv
 import pyarabic.trans
-
+import streamlit as st
 load_dotenv()
 
 
@@ -271,6 +271,7 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
         used_api_key = genai.configure(api_key=os.getenv("API_KEY"))
 
     model = genai.GenerativeModel("gemini-2.0-flash")
+    st.write(model)
     results = []  # Store results for all pages
 
     for i in range(start_page, end_page + 1):
@@ -284,6 +285,8 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
 
         try:
             result = model.generate_content([myfile, pdf_extraction_prompt])
+            st.write(f"Processing page {i}: {image_path}")
+
             print(f"Processing page {i}: {image_path}")
 
             result_text = result.text
