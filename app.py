@@ -49,10 +49,13 @@ if choice == "Process PDF":
    - The header is distinct from the main heading of the page.
    - Header is mostly seprated by the actual line using the line below the header.
 
-
-2. **Main Content**:
-   - Extract all text from the body of the page that is not part of the header, footer, or footnotes.
-   -  If there is bold text inside the main content consider it heading ,enclose it with * symbols as this (*heading*) in the content
+2. Main Content (Body of the Page)
+- Extract all text from the **central body** of the page, excluding headers, footers, and footnotes.
+- **Identify the main heading of the page** and enclose it in asterisks (`*`), like this:
+  - Example: (*العنوان الرئيسي للصفحة*)
+- Additionally, if **any bold text** is found **inside the main content**, it should also be treated as a heading and enclosed in asterisks (`*`), like this:
+  - Example: (*عنوان فرعي داخل المحتوى*)
+- Maintain the **original Arabic formatting** and ensure all extracted text is **right-aligned** to preserve proper Arabic text flow.
 
 3. **Footnotes (Text Below the Black Line)**:
    - Carefully identify any black horizontal line present on the page.
