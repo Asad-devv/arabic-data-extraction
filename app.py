@@ -55,7 +55,7 @@ if choice == "Process PDF":
   - Example: *العنوان الرئيسي للصفحة*
 - Additionally, if **any bold text** is found **inside the main content**, it should also be treated as a heading and enclosed in asterisks (`*`), like this:
   - Example: *عنوان فرعي داخل المحتوى*
-- Maintain the **original Arabic formatting** and ensure all extracted text is **right-aligned** to preserve proper Arabic text flow.
+- If the page is empty/blank give *blank*
 
 3. **Footnotes (Text Below the Black Line)**:
    - Carefully identify any black horizontal line present on the page.
@@ -81,6 +81,7 @@ For each page, provide the extracted data in the following JSON structure:
   "footer": "<Arabic text of the footer>",
   "footnotes": "<Arabic text of the footnotes>"
   }
+  
    """
 
     st.title("Arabic PDF to Word Converter")
