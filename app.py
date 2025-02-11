@@ -52,9 +52,9 @@ if choice == "Process PDF":
 2. Main Content (Body of the Page)
 - Extract all text from the **central body** of the page, excluding headers, footers, and footnotes.
 - **Identify the main heading of the page** and enclose it in asterisks (`*`), like this:
-  - Example: (*العنوان الرئيسي للصفحة*)
+  - Example: *العنوان الرئيسي للصفحة*
 - Additionally, if **any bold text** is found **inside the main content**, it should also be treated as a heading and enclosed in asterisks (`*`), like this:
-  - Example: (*عنوان فرعي داخل المحتوى*)
+  - Example: *عنوان فرعي داخل المحتوى*
 - Maintain the **original Arabic formatting** and ensure all extracted text is **right-aligned** to preserve proper Arabic text flow.
 
 3. **Footnotes (Text Below the Black Line)**:
