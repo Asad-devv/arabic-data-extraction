@@ -298,7 +298,7 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
     else:
         used_api_key = genai.configure(api_key=os.getenv("API_KEY"))
 
-    model = genai.GenerativeModel("gemini-1.5-pro")
+    model = genai.GenerativeModel("gemini-2.0-flash")
     st.write(model)
     results = []  # Store results for all pages
 
