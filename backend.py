@@ -202,7 +202,7 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         main_content = clean_arabic_text(main_content)
 
     # Split text based on '#' while keeping track of bold sections
-        pattern = r'(\*)(.*?)\1
+        pattern = r'([\*])(.*?)\1'
         parts = re.split(pattern, main_content)
 
         for i, part in enumerate(parts):
