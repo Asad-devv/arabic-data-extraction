@@ -52,7 +52,7 @@ if choice == "Process PDF":
 
 2. **Main Content**:
    - Extract all text from the body of the page that is not part of the header, footer, or footnotes.
-   -  If there is bold text inside the main content consider it heading , show it enclose it with #(hash) symbols as this (#heading#) in the content
+   -  If there is bold text inside the main content consider it heading ,enclose it with * symbols as this (*heading*) in the content
 
 3. **Footnotes (Text Below the Black Line)**:
    - Carefully identify any black horizontal line present on the page.
