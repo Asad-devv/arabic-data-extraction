@@ -301,7 +301,7 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
     else:
         used_api_key = genai.configure(api_key=os.getenv("API_KEY"))
 
-    model = genai.GenerativeModel("gemini-2.0-flash")
+    model = genai.GenerativeModel("gemini-1.5-pro")
     st.write(model)
     results = []  # Store results for all pages
 
@@ -339,7 +339,7 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
             # results.append({"error": str(e), "page": i})
 
      # Adjust delay based on API key presence
-
+        time.sleep(2 if api_key else 15)
     return results
 
 
