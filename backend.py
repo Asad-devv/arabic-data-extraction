@@ -105,7 +105,7 @@ def extract_number_and_line(line):
             return True, line[4:]
     return False, line
 
-def process_page(page_data, doc, page_number, need_header_and_footer=True , need_footnotes=True,remove_characters=["*",">","<","«","»"]):
+def process_page(page_data, doc, page_number, need_header_and_footer=True , need_footnotes=True,remove_characters=[">","<","«","»"]):
     """
     Processes OCR results and formats the content into a Word document.
 
@@ -202,7 +202,7 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         main_content = clean_arabic_text(main_content)
 
     # Split text based on '#' while keeping track of bold sections
-        pattern = r'([#*""])(.*?)\1'
+        pattern = r'(\*)(.*?)\1
         parts = re.split(pattern, main_content)
 
         for i, part in enumerate(parts):
