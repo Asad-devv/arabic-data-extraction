@@ -202,25 +202,22 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         main_content = clean_arabic_text(main_content)
 
     # Split text based on '#' while keeping track of bold sections
-        content_parts = [part.strip() for part in main_content.split('#') if part.strip()]
+        pattern = r'([#*""])(.*?)\1'
+        parts = re.split(pattern, main_content)
 
-        is_bold = False  # Track if the text should be bold
-
-        for part in content_parts:
-            if is_bold:
-            # Create a new paragraph for bold text
+        for i, part in enumerate(parts):
+            if i % 3 == 2:  # Enclosed text (bold)
                 paragraph = doc.add_paragraph("")
-            else:
-            # Add normal text in the same paragraph
+                paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                run = paragraph.add_run(part.strip())
+                run.bold = True
+            elif part.strip():  # Normal text
                 paragraph = doc.add_paragraph("")
+                paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                run = paragraph.add_run(part.strip())
 
-            paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            run = paragraph.add_run(part)
-            run.font.size = Pt(11)
-            run.font.name = "Times New Roman"
-            run.bold = is_bold  # Apply bold formatting if needed
-            is_bold = not is_bold
-
+        run.font.size = Pt(12)
+        run.font.name = "Times New Roman"
     if need_footnotes and footnotes:
         paragraph = doc.add_paragraph("------------------")
         paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -339,7 +336,7 @@ def extract_pdf_content(pdf_extraction_prompt, start_page, end_page, api_key=Non
             # results.append({"error": str(e), "page": i})
 
      # Adjust delay based on API key presence
-        time.sleep(2 if api_key else 15)
+        # time.sleep(2 if api_key else 15)
     return results
 
 
