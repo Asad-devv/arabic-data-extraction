@@ -201,21 +201,22 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         main_content = remove_given_characters(main_content, remove_characters)
         main_content = clean_arabic_text(main_content)
 
-    # Split text based on '#' while keeping track of bold sections
-        pattern = r'([\*])(.*?)\1'
+    # Define regex pattern to find text enclosed in '*'
+        pattern = r'\*(.*?)\*'
         parts = re.split(pattern, main_content)
 
         for i, part in enumerate(parts):
-            if i % 3 == 2:  # Enclosed text (bold)
-                paragraph = doc.add_paragraph("")
+            if i % 2 == 1:  # This is the bold text
+                paragraph = doc.add_paragraph("")  # Create a new paragraph for bold text
                 paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                run = paragraph.add_run(part.strip())
+                run = paragraph.add_run(part.strip())  # Remove stars
                 run.bold = True
-            elif part.strip():  # Normal text
-                paragraph = doc.add_paragraph("")
+            elif part.strip():  # This is normal text
+                paragraph = doc.add_paragraph("")  # Create a new paragraph for normal text
                 paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
                 run = paragraph.add_run(part.strip())
 
+        # Set font properties
         run.font.size = Pt(12)
         run.font.name = "Times New Roman"
     if need_footnotes and footnotes:
