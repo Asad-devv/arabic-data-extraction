@@ -197,23 +197,29 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         if not need_footnotes:
             main_content = remove_small_number_brackets(main_content)
 
-            main_content = remove_square_brackets(main_content)
-            main_content = remove_given_characters(main_content, remove_characters)
-            main_content = clean_arabic_text(main_content)
+        main_content = remove_square_brackets(main_content)
+        main_content = remove_given_characters(main_content, remove_characters)
+        main_content = clean_arabic_text(main_content)
 
     # Split text based on '#' while keeping track of bold sections
         content_parts = [part.strip() for part in main_content.split('#') if part.strip()]
 
-        paragraph = doc.add_paragraph("")
-        paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-
         is_bold = False  # Track if the text should be bold
+
         for part in content_parts:
+            if is_bold:
+            # Create a new paragraph for bold text
+                paragraph = doc.add_paragraph("")
+            else:
+            # Add normal text in the same paragraph
+                paragraph = doc.add_paragraph("")
+
+            paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
             run = paragraph.add_run(part)
-            run.font.size = Pt(10)
+            run.font.size = Pt(11)
             run.font.name = "Times New Roman"
             run.bold = is_bold  # Apply bold formatting if needed
-            is_bold = not is_bold  # Toggle bold for the next section
+            is_bold = not is_bold
 
     if need_footnotes and footnotes:
         paragraph = doc.add_paragraph("------------------")
