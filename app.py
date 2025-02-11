@@ -49,30 +49,18 @@ if choice == "Process PDF":
    - The header is distinct from the main heading of the page.
    - Header is mostly seprated by the actual line using the line below the header.
 
-2. **Heading**:
 
-- Extract the **main heading** if it exists. This heading is typically located **below the header** (if present) and **above the main content**.
-- The main heading is usually a **prominent line of text** near the top of the page body. It is often characterized by:
-  - Larger and bold font.
-  - Center-aligned formatting.
-- **Do not confuse the heading with:**
-  - Text present in the **header** (repeated content, such as document titles or page numbers at the very top).
-  - Text that is part of the **main content**.
-- If a heading appears within the body of the page (e.g., as part of a subsection), it should be treated as part of the **main content section**, not as the main heading.
-- If there is no heading present between the header and main content, leave the "heading" field as `null`.
-
-
-3. **Main Content**:
+2. **Main Content**:
    - Extract all text from the body of the page that is not part of the header, footer, or footnotes.
-   -  If there is a heading Inside the main content, show it in the main content and enclose it with #(hash) symbols as this (#text#)
+   -  If there is bold text inside the main content consider it heading , show it enclose it with #(hash) symbols as this (#heading#) in the content
 
-4. **Footnotes (Text Below the Black Line)**:
+3. **Footnotes (Text Below the Black Line)**:
    - Carefully identify any black horizontal line present on the page.
    - If the line exists, categorize all text below it as "Footnotes".
    - The black line will typically cover about half the width of the page and is visually distinct.
    - If no black line is present, the "Footnotes" section should be empty for that page.
 
-5. **Footers**:
+4. **Footers**:
    - Extract all text from the footer section of the page, typically located at the very bottom.
    - Footers often include repetitive elements such as page numbers or document-specific references and should not overlap with footnotes.
 
@@ -86,7 +74,6 @@ if choice == "Process PDF":
 For each page, provide the extracted data in the following JSON structure:
   {
   "header": "<Arabic text of the header>",
-  "heading": "<Arabic text of the heading>",
   "main_content": "<Arabic text of the main content>",
   "footer": "<Arabic text of the footer>",
   "footnotes": "<Arabic text of the footnotes>"
