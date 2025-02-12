@@ -13,6 +13,26 @@ import pyarabic.trans
 import streamlit as st
 load_dotenv()
 
+def convert_english_to_arabic_digits(text):
+    # Mapping of English digits to Arabic digits
+    digit_mapping = {
+        '0': '٠',
+        '1': '١',
+        '2': '٢',
+        '3': '٣',
+        '4': '٤',
+        '5': '٥',
+        '6': '٦',
+        '7': '٧',
+        '8': '٨',
+        '9': '٩'
+    }
+    
+    # Replace each English digit with its corresponding Arabic digit
+    for eng, arb in digit_mapping.items():
+        text = text.replace(eng, arb)
+    
+    return text
 
 def process_section(doc, main_content):
     """
@@ -200,7 +220,7 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         main_content = remove_square_brackets(main_content)
         main_content = remove_given_characters(main_content, remove_characters)
         main_content = clean_arabic_text(main_content)
-        main_content=pyarabic.trans.normalize_digits(main_content, source='west', out='arabic')
+        main_content=convert_english_to_arabic_digits(main_content)
     # Define regex pattern to find text enclosed in '*'
         pattern = r'\*(.*?)\*'
         parts = re.split(pattern, main_content)
