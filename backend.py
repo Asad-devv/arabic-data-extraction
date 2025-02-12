@@ -200,7 +200,7 @@ def process_page(page_data, doc, page_number, need_header_and_footer=True , need
         main_content = remove_square_brackets(main_content)
         main_content = remove_given_characters(main_content, remove_characters)
         main_content = clean_arabic_text(main_content)
-
+        main_content=pyarabic.trans.normalize_digits(main_content, source='west', out='arabic')
     # Define regex pattern to find text enclosed in '*'
         pattern = r'\*(.*?)\*'
         parts = re.split(pattern, main_content)
