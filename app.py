@@ -17,43 +17,19 @@ import streamlit as st
 from io import BytesIO
 import base64
 
-# HTML + JavaScript for file upload
+import streamlit as st
+from io import BytesIO
+
+# HTML file uploader
 st.markdown("""
-<h3>Custom File Uploader (Supports Arabic Names)</h3>
+<h3>Custom HTML File Uploader</h3>
 <input type="file" id="file_upload" accept=".pdf">
-<script>
-document.getElementById("file_upload").addEventListener("change", function(e) {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        window.parent.postMessage({
-            file: {
-                name: file.name,
-                data: Array.from(new Uint8Array(e.target.result))
-            }
-        }, "*");
-    };
-    reader.readAsArrayBuffer(file);
-});
-</script>
 """, unsafe_allow_html=True)
 
-# Python handling (via Streamlit's message passing)
-if "file_data" not in st.session_state:
-    st.session_state.file_data = None
-
-# Listen for JavaScript messages
-file_data = st.experimental_get_query_params().get("file_data")
-if file_data:
-    file_name = file_data[0]["name"]
-    file_bytes = bytes(file_data[0]["data"])
-    st.session_state.file_data = (file_name, file_bytes)
-
-if st.session_state.file_data:
-    file_name, file_bytes = st.session_state.file_data
-    st.success(f"Uploaded via HTML: {file_name}")
-    # Process file_bytes (e.g., save or send to backend)
-
+# Handle the uploaded file
+uploaded_file = st.file_uploader("Or use Streamlit's uploader", type="pdf")
+if uploaded_file:
+    st.success(f"Uploaded: {uploaded_file.name}")
 def find_and_replace_in_docx(doc, find_texts, replace_texts):
     """
     Replaces all occurrences of specified Arabic text in the document.
