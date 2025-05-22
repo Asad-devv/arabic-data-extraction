@@ -10,6 +10,24 @@ import re
 from dotenv import load_dotenv
 from backend import pdf_to_images, extract_pdf_content, process_page , process_page2
 from streamlit.web.server.websocket_headers import _get_websocket_headers
+import unicodedata
+import re
+
+def clean_filename(filename):
+    # Normalize Unicode characters (Arabic, etc.) to ASCII-compatible
+    nfkd_form = unicodedata.normalize('NFKD', filename)
+    only_ascii = nfkd_form.encode('ASCII', 'ignore').decode('ASCII')
+    # Replace anything unsafe
+    safe_name = re.sub(r'[^\w\-_. ]', '_', only_ascii)
+    return safe_name or "uploaded_file"
+
+uploaded_file = st.file_uploader("Upload your file")
+
+if uploaded_file:
+    cleaned_name = clean_filename(uploaded_file.name)
+    with open(cleaned_name, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    st.success(f"File uploaded as: {cleaned_name}")
 
 load_dotenv()
 def _allow_put_requests():
