@@ -89,78 +89,78 @@ For each page, provide the extracted data in the following JSON structure:
   }
   
    """
-import streamlit as st
-from io import BytesIO
-import base64
-import uuid
-
-st.title("Arabic PDF to Word Converter")
-st.write("Upload a PDF, extract Arabic content, and download the result in a Word document.")
-
-# --- HTML File Uploader (Advanced Version) ---
-st.markdown("""
-<h3 style='color: #2e86c1;'>Upload PDF File</h3>
-<input type="file" id="html_uploader" accept=".pdf" style="margin-bottom: 20px;">
-<script>
-function sendFileToPython(file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const bytes = Array.from(new Uint8Array(e.target.result));
-        window.parent.postMessage({
-            uploaded_file: {
-                name: file.name,
-                size: file.size,
-                type: file.type,
-                data: bytes
-            }
-        }, "*");
-    };
-    reader.readAsArrayBuffer(file);
-}
-
-document.getElementById("html_uploader").addEventListener("change", function(e) {
-    if (e.target.files.length > 0) {
-        sendFileToPython(e.target.files[0]);
+    import streamlit as st
+    from io import BytesIO
+    import base64
+    import uuid
+    
+    st.title("Arabic PDF to Word Converter")
+    st.write("Upload a PDF, extract Arabic content, and download the result in a Word document.")
+    
+    # --- HTML File Uploader (Advanced Version) ---
+    st.markdown("""
+    <h3 style='color: #2e86c1;'>Upload PDF File</h3>
+    <input type="file" id="html_uploader" accept=".pdf" style="margin-bottom: 20px;">
+    <script>
+    function sendFileToPython(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const bytes = Array.from(new Uint8Array(e.target.result));
+            window.parent.postMessage({
+                uploaded_file: {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    data: bytes
+                }
+            }, "*");
+        };
+        reader.readAsArrayBuffer(file);
     }
-});
-</script>
-""", unsafe_allow_html=True)
-
-# Handle the uploaded file from JavaScript
-if "uploaded_file" not in st.session_state:
-    st.session_state.uploaded_file = None
-
-# Check for messages from JavaScript
-uploaded_file_data = st.experimental_get_query_params().get("uploaded_file")
-if uploaded_file_data:
-    try:
-        # Convert the data back to bytes
-        file_bytes = bytes(uploaded_file_data[0]["data"])
-        file_name = uploaded_file_data[0]["name"]
-        
-        # Store in session state
-        st.session_state.uploaded_file = {
-            "name": file_name,
-            "data": file_bytes
+    
+    document.getElementById("html_uploader").addEventListener("change", function(e) {
+        if (e.target.files.length > 0) {
+            sendFileToPython(e.target.files[0]);
         }
-        st.rerun()  # Refresh to show the uploaded file
-    except:
-        st.error("Error processing uploaded file")
-
-# Show uploaded file info
-if st.session_state.uploaded_file:
-    st.success(f"File ready: {st.session_state.uploaded_file['name']}")
-
-# --- Rest of your existing form ---
-user_api_key = st.text_input("Enter your Gemini API Key (optional):", type="password")
-output_file_name = st.text_input("Enter output Word file name (with .docx extension):", "result.docx")
-start_page = st.number_input("Start Page (1-based index):", value=1)
-end_page = st.number_input("End Page (inclusive):", value=1)
-
-# Processing options
-footnotes = st.checkbox("Include Footnotes", value=False)
-headers = st.checkbox("Include Headers and Footers", value=False)
-extra_chars = st.text_area("Characters to Remove (comma-separated):", "").split(",")
+    });
+    </script>
+    """, unsafe_allow_html=True)
+    
+    # Handle the uploaded file from JavaScript
+    if "uploaded_file" not in st.session_state:
+        st.session_state.uploaded_file = None
+    
+    # Check for messages from JavaScript
+    uploaded_file_data = st.experimental_get_query_params().get("uploaded_file")
+    if uploaded_file_data:
+        try:
+            # Convert the data back to bytes
+            file_bytes = bytes(uploaded_file_data[0]["data"])
+            file_name = uploaded_file_data[0]["name"]
+            
+            # Store in session state
+            st.session_state.uploaded_file = {
+                "name": file_name,
+                "data": file_bytes
+            }
+            st.rerun()  # Refresh to show the uploaded file
+        except:
+            st.error("Error processing uploaded file")
+    
+    # Show uploaded file info
+    if st.session_state.uploaded_file:
+        st.success(f"File ready: {st.session_state.uploaded_file['name']}")
+    
+    # --- Rest of your existing form ---
+    user_api_key = st.text_input("Enter your Gemini API Key (optional):", type="password")
+    output_file_name = st.text_input("Enter output Word file name (with .docx extension):", "result.docx")
+    start_page = st.number_input("Start Page (1-based index):", value=1)
+    end_page = st.number_input("End Page (inclusive):", value=1)
+    
+    # Processing options
+    footnotes = st.checkbox("Include Footnotes", value=False)
+    headers = st.checkbox("Include Headers and Footers", value=False)
+    extra_chars = st.text_area("Characters to Remove (comma-separated):", "").split(",")
 
 if st.button("Process PDF"):
     if not st.session_state.uploaded_file:
