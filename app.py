@@ -9,15 +9,11 @@ import google.generativeai as genai
 import re
 from dotenv import load_dotenv
 from backend import pdf_to_images, extract_pdf_content, process_page , process_page2
-import urllib.parse
 
 load_dotenv()
 
 # Default API Key
 DEFAULT_API_KEY = os.getenv("API_KEY")
-
-def encode_filename(filename):
-    return urllib.parse.quote(filename)
 
 def find_and_replace_in_docx(doc, find_texts, replace_texts):
     """
@@ -95,23 +91,6 @@ For each page, provide the extracted data in the following JSON structure:
     user_api_key = st.text_input("Enter your Gemini API Key (optional):", type="password")
     pdf_file = st.file_uploader("Upload a PDF file", type=["pdf"])
     
-
-    if pdf_file is not None:
-        original_filename = pdf_file.name
-        encoded_filename = encode_filename(original_filename)
-    
-    # Save the file with the encoded filename
-        with open(encoded_filename, "wb") as f:
-            f.write(pdf_file.getbuffer())
-
-        st.write(f"File '{original_filename}' uploaded as '{encoded_filename}'")
-
-    # To retrieve the original filename:
-        decoded_filename = urllib.parse.unquote(encoded_filename)
-        st.write(f"Original filename: '{decoded_filename}'")
-
-    # Clean up the uploaded file (optional)
-        os.remove(encoded_filename)
     output_file_name = st.text_input("Enter output Word file name (with .docx extension):", "result.docx")
     start_page = st.number_input("Start Page (1-based index):",value=1)
     end_page = st.number_input("End Page (inclusive):",value=1)
