@@ -22,6 +22,7 @@ def clean_filename(filename):
     return safe_name or "uploaded_file"
 
 uploaded_file = st.file_uploader("Upload your file")
+filename = uploaded_file.name.encode('latin1').decode('utf-8', errors='ignore')
 
 if uploaded_file:
     cleaned_name = clean_filename(uploaded_file.name)
