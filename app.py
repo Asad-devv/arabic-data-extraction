@@ -13,31 +13,46 @@ from streamlit.web.server.websocket_headers import _get_websocket_headers
 import unicodedata
 import re
 
-def clean_filename(filename):
-    # Normalize Unicode characters (Arabic, etc.) to ASCII-compatible
-    nfkd_form = unicodedata.normalize('NFKD', filename)
-    only_ascii = nfkd_form.encode('ASCII', 'ignore').decode('ASCII')
-    # Replace anything unsafe
-    safe_name = re.sub(r'[^\w\-_. ]', '_', only_ascii)
-    return safe_name or "uploaded_file"
+import streamlit as st
+from io import BytesIO
+import base64
 
-uploaded_file = st.file_uploader("Upload your file")
-filename = uploaded_file.name.encode('latin1').decode('utf-8', errors='ignore')
+# HTML + JavaScript for file upload
+st.markdown("""
+<h3>Custom File Uploader (Supports Arabic Names)</h3>
+<input type="file" id="file_upload" accept=".pdf">
+<script>
+document.getElementById("file_upload").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        window.parent.postMessage({
+            file: {
+                name: file.name,
+                data: Array.from(new Uint8Array(e.target.result))
+            }
+        }, "*");
+    };
+    reader.readAsArrayBuffer(file);
+});
+</script>
+""", unsafe_allow_html=True)
 
-if uploaded_file:
-    cleaned_name = clean_filename(uploaded_file.name)
-    with open(cleaned_name, "wb") as f:
-        f.write(uploaded_file.getbuffer())
-    st.success(f"File uploaded as: {cleaned_name}")
+# Python handling (via Streamlit's message passing)
+if "file_data" not in st.session_state:
+    st.session_state.file_data = None
 
-load_dotenv()
-def _allow_put_requests():
-    import os
-    os.environ["STREAMLIT_SERVER_ENABLE_STATIC_FILE_HANDLING"] = "true"
+# Listen for JavaScript messages
+file_data = st.experimental_get_query_params().get("file_data")
+if file_data:
+    file_name = file_data[0]["name"]
+    file_bytes = bytes(file_data[0]["data"])
+    st.session_state.file_data = (file_name, file_bytes)
 
-_allow_put_requests()
-# Default API Key
-DEFAULT_API_KEY = os.getenv("API_KEY")
+if st.session_state.file_data:
+    file_name, file_bytes = st.session_state.file_data
+    st.success(f"Uploaded via HTML: {file_name}")
+    # Process file_bytes (e.g., save or send to backend)
 
 def find_and_replace_in_docx(doc, find_texts, replace_texts):
     """
