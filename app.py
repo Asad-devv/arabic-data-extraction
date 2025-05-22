@@ -158,38 +158,43 @@ For each page, provide the extracted data in the following JSON structure:
 
 
     if st.button("Process PDF"):
-        if not pdf_file:
+        if not st.session_state.uploaded_file:
             st.error("Please upload a PDF file.")
         else:
+            # Create a BytesIO object from the uploaded file data
+            pdf_bytes = BytesIO(st.session_state.uploaded_file["data"])
+            
+            # Save to temporary file (if needed)
+            temp_pdf = f"temp_{uuid.uuid4().hex}.pdf"
+            with open(temp_pdf, "wb") as f:
+                f.write(pdf_bytes.getbuffer())
+            
+            st.write(f"Processing {st.session_state.uploaded_file['name']}...")
+            
+            # --- Your existing processing logic here ---
+            # Example placeholder:
             try:
-                # Step 1: Save the uploaded PDF
-                pdf_path = os.path.join("temp", "uploaded_pdf.pdf")
-                os.makedirs("temp", exist_ok=True)
-                with open(pdf_path, "wb") as f:
-                    f.write(pdf_file.read())
-
-                # Step 2: Validate and enforce page limits
-                pdf_document = fitz.open(pdf_path)
-                total_pages = len(pdf_document)
-                pdf_document.close()
-
-                if end_page == 0 or end_page > total_pages:
-                    end_page = total_pages
-
-                if not user_api_key and (end_page - start_page + 1) > 10:
-                    st.warning("API key not provided. Limiting processing to 10 pages.")
-                    end_page = min(start_page + 9, total_pages)
-
-                # Step 3: Convert PDF pages to images
-                output_folder = "temp_images"
-                pdf_to_images(pdf_path, output_folder, start_page=start_page, end_page=end_page)
-
-                # Step 4: Initialize Word document
-                doc = Document()
-
-                # Step 5: Extract content and process pages
-                st.write("Extracting content from the PDF...")
-                
+                with st.spinner("Extracting Arabic text..."):
+                    # Call your processing functions here
+                    # process_pdf(temp_pdf, output_file_name, ...)
+                    st.success("Conversion complete!")
+                    
+                    # Offer download (example)
+                    with open(output_file_name, "rb") as f:
+                        st.download_button(
+                            label="Download Word Document",
+                            data=f,
+                            file_name=output_file_name,
+                            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        )
+            except Exception as e:
+                st.error(f"Error during processing: {str(e)}")
+            finally:
+                # Clean up temp file
+                import os
+                if os.path.exists(temp_pdf):
+                    os.remove(temp_pdf)
+                    
                     
                 try:
                     page_content = extract_pdf_content(
