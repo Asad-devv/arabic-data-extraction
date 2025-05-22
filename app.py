@@ -9,9 +9,14 @@ import google.generativeai as genai
 import re
 from dotenv import load_dotenv
 from backend import pdf_to_images, extract_pdf_content, process_page , process_page2
+from streamlit.web.server.websocket_headers import _get_websocket_headers
 
 load_dotenv()
+def _allow_put_requests():
+    import os
+    os.environ["STREAMLIT_SERVER_ENABLE_STATIC_FILE_HANDLING"] = "true"
 
+_allow_put_requests()
 # Default API Key
 DEFAULT_API_KEY = os.getenv("API_KEY")
 
